@@ -1,0 +1,30 @@
+name: Crear APK Estudio Fácil
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Descargar proyecto
+        uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip python3-virtualenv
+          sudo apt install -y autoconf libtool pkg-config zlib1g-dev libncurses5-dev
+          sudo apt install -y cmake libffi-dev libssl-dev automake autopoint gettext
+          python3 -m pip install --upgrade pip
+          python3 -m pip install buildozer setuptools cython==0.29.34
+
+      - name: Construir APK
+        run: buildozer android debug
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: EstudioFacil-APK
+          path: bin/*.apk
